@@ -129,7 +129,7 @@ public class ApiHandler {
     private static void addHeaders(HttpURLConnection connection, Map<String, String> headers) {
         if(headers != null) {
             for(String key : headers.keySet())
-                connection.addRequestProperty(key, headers.get(key));
+                connection.setRequestProperty(key, headers.get(key));
         }
     }
 
