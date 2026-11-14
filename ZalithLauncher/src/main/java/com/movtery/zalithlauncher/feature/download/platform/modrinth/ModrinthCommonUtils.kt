@@ -97,9 +97,12 @@ class ModrinthCommonUtils {
 
             val infoItems: MutableList<InfoItem> = ArrayList()
             for (responseHit in responseHits) {
-                val hit = responseHit.asJsonObject
-                getInfoItem(hit, classify)?.let { item ->
-                    infoItems.add(item)
+                runCatching {
+                    getInfoItem(responseHit.asJsonObject, classify)?.let { item ->
+                        infoItems.add(item)
+                    }
+                }.onFailure { e ->
+                    Logging.e("ModrinthCommonUtils", "Skipping a result that could not be parsed\n${Tools.printToString(e)}")
                 }
             }
 
