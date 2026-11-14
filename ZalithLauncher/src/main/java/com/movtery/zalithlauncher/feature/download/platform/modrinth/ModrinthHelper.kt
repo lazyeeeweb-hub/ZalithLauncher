@@ -13,7 +13,7 @@ import com.movtery.zalithlauncher.feature.download.platform.PlatformNotSupported
 import net.kdt.pojavlaunch.modloaders.modpacks.api.ApiHandler
 import java.io.File
 
-class ModrinthHelper : AbstractPlatformHelper(ApiHandler("https://api.modrinth.com/v2")) {
+class ModrinthHelper : AbstractPlatformHelper(createApi()) {
     override fun copy(): AbstractPlatformHelper {
         return ModrinthHelper()
     }
@@ -108,5 +108,11 @@ class ModrinthHelper : AbstractPlatformHelper(ApiHandler("https://api.modrinth.c
     @Throws(Throwable::class)
     override fun installShaderPack(infoItem: InfoItem, version: VersionItem, targetPath: File, progressKey: String) {
         InstallHelper.downloadFile(version, targetPath, progressKey)
+    }
+
+    companion object {
+        private fun createApi() = ApiHandler("https://api.modrinth.com/v2").apply {
+            additionalHeaders["User-Agent"] = "lazyeeeweb-hub/ZalithLauncher-fork/1.4.1.2"
+        }
     }
 }
