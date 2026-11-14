@@ -79,6 +79,14 @@ public class ApiHandler {
         } catch (Exception e) {
             Logging.e("ApiHandler", Tools.printToString(e));
             if (conn != null) {
+                try {
+                    int code = conn.getResponseCode();
+                    InputStream es = conn.getErrorStream();
+                    String body = es != null ? Tools.read(es) : "";
+                    Logging.e("ApiHandler", "HTTP " + code + " for " + url + "\n"
+                            + body.substring(0, Math.min(500, body.length())));
+                } catch (Exception ignored) {
+                }
                 conn.disconnect();
             }
             throw new RuntimeException(e);
@@ -109,20 +117,9 @@ public class ApiHandler {
 
             conn.disconnect();
             return data;
-        } catch (Exception e) {
-    Logging.e("ApiHandler", Tools.printToString(e));
-    if (conn != null) {
-        try {
-            int code = conn.getResponseCode();
-            InputStream es = conn.getErrorStream();
-            String body = es != null ? Tools.read(es) : "";
-            Logging.e("ApiHandler", "HTTP " + code + " for " + url + "\n"
-                    + body.substring(0, Math.min(500, body.length())));
-        } catch (Exception ignored) {}
-        conn.disconnect();
-    }
-    throw new RuntimeException(e);
-}
+        } catch (IOException e) {
+            Logging.e("ApiHandler", Tools.printToString(e));
+        }
         return null;
     }
 
